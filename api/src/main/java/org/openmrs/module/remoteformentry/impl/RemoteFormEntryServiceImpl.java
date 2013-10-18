@@ -1,27 +1,5 @@
 package org.openmrs.module.remoteformentry.impl;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.EncounterType;
@@ -57,6 +35,27 @@ import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebUtil;
 import org.w3c.dom.Document;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
+
 /**
  * Remote data entry-related services
  */
@@ -89,11 +88,11 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 
 	/**
 	 * Get the remote form entry data access object
-	 * 
+	 *
 	 * @return RemoteFormEntryDAO
 	 */
 	@SuppressWarnings("unused")
-    private RemoteFormEntryDAO getRemoteFormEntryDAO() {
+	private RemoteFormEntryDAO getRemoteFormEntryDAO() {
 		return dao;
 	}
 
@@ -108,23 +107,22 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 	 * @see org.openmrs.module.formentry.RemoteFormEntryService#createRemoteFormEntryPendingQueue(org.openmrs.module.formentry.RemoteFormEntryPendingQueue)
 	 */
 	public void createRemoteFormEntryPendingQueue(
-	        RemoteFormEntryPendingQueue pendingQueue) {
+			RemoteFormEntryPendingQueue pendingQueue) {
 		File queueDir = RemoteFormEntryUtil.getPendingQueueDir();
-		
+
 		String fileSystemUrl = pendingQueue.getFileSystemUrl();
-		
+
 		File outFile = null;
-		
+
 		if (fileSystemUrl != null) {
 			// get just the file name out of the full path
 			String filename = WebUtil.stripFilename(fileSystemUrl);
 			// create the file with the same name as the filename in the current pending queue's url
 			outFile = new File(queueDir, filename);
-		}
-		else 
+		} else
 			outFile = OpenmrsUtil.getOutFile(queueDir,
-		                                     null,
-		                                     pendingQueue.getCreator());
+					null,
+					pendingQueue.getCreator());
 
 		// write the queue's data to the file
 		try {
@@ -166,7 +164,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 	 * @see org.openmrs.module.formentry.RemoteFormEntryService#deleteRemoteFormEntryPendingQueue(org.openmrs.module.formentry.RemoteFormEntryPendingQueue)
 	 */
 	public void deleteRemoteFormEntryPendingQueue(
-	        RemoteFormEntryPendingQueue pendingQueue) {
+			RemoteFormEntryPendingQueue pendingQueue) {
 		if (pendingQueue == null || pendingQueue.getFileSystemUrl() == null)
 			throw new FormEntryException("Unable to load remoteFormEntryPendingQueue with empty file system url");
 
@@ -175,7 +173,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 		// if we have a relative url, prepend pendingQueue dir
 		if (!file.exists() && !file.isAbsolute()) {
 			file = new File(RemoteFormEntryUtil.getPendingQueueDir(),
-			                pendingQueue.getFileSystemUrl());
+					pendingQueue.getFileSystemUrl());
 		}
 
 		if (file.exists()) {
@@ -191,7 +189,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 
 		List<File> fileList = Arrays.asList(queueDir.listFiles());
 		Collections.sort(fileList, filenameComparator);
-		
+
 		// return the first queue item
 		for (File file : fileList) {
 			RemoteFormEntryPendingQueue queueItem = new RemoteFormEntryPendingQueue();
@@ -219,7 +217,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 		EncounterService es = Context.getEncounterService();
 
 		String encounterTypeIdsString = as.getGlobalProperty(RemoteFormEntryConstants.GP_INITIAL_ENCOUNTER_TYPES,
-		                                                     "");
+				"");
 		String[] encounterTypeIds = encounterTypeIdsString.split(",");
 
 		// populate the encounter type objects
@@ -264,7 +262,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 	 *      javax.xml.xpath.XPath)
 	 */
 	public Patient createPatientInDatabase(Document doc, XPath xp)
-	        throws XPathExpressionException, Exception {
+			throws XPathExpressionException, Exception {
 
 		PatientService patientService = Context.getPatientService();
 
@@ -313,7 +311,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 	 *      org.w3c.dom.Document, javax.xml.xpath.XPath)
 	 */
 	public void updatePatientInDatabase(Patient patient, Document doc, XPath xp)
-	        throws XPathExpressionException, Exception {
+			throws XPathExpressionException, Exception {
 		// loop over all possible things that could have been changed and
 		// update them for this patient object
 
@@ -336,10 +334,10 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 					break;
 				}
 			}
-			
+
 			if (!found)
 				patient.addName(newPersonName);
-			
+
 		}
 
 		// add the person address if patient doesn't have it yet
@@ -357,10 +355,10 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 					break;
 				}
 			}
-			
+
 			if (!found)
 				patient.addAddress(newPersonAddress);
-			
+
 		}
 
 		// add the patient identifier if patient doesn't have it yet
@@ -388,14 +386,14 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 					}
 				}
 			}
-			
+
 			if (!found)
 				patient.addIdentifier(newPersonIdentifier);
 		}
 
 		// set the person attributes
 		RemoteFormEntryUtil.setPersonAttributes(patient, doc, xp, enterer);
-		
+
 		// set the person properties (like gender, death status, birthdate, etc)
 		RemoteFormEntryUtil.setPersonProperties(patient, doc, xp, enterer);
 
@@ -423,28 +421,28 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 					break;
 				}
 			}
-			
+
 			if (!found && newRelationship != null)
 				Context.getPersonService().saveRelationship(newRelationship);
 		}
-		
+
 		// TODO add the program/workflow additions
 		// createProgramWorkflowEnrollment(createdPatient, doc, xp, enterer);
 
 	}
-	
+
 	/**
 	 * Compares personA's, personB's, and relationship type
-	 * 
-	 * @param rel first side
+	 *
+	 * @param rel             first side
 	 * @param newRelationship other side
 	 * @return true if these are really the same relationship
 	 */
 	private boolean equalsContent(Relationship rel, Relationship newRelationship) {
-	    return rel.getPersonA().equals(newRelationship.getPersonA()) &&
-	    	rel.getPersonB().equals(newRelationship.getPersonB()) &&
-	    	rel.getRelationshipType().equals(newRelationship.getRelationshipType());
-    }
+		return rel.getPersonA().equals(newRelationship.getPersonA()) &&
+				rel.getPersonB().equals(newRelationship.getPersonB()) &&
+				rel.getRelationshipType().equals(newRelationship.getRelationshipType());
+	}
 
 	/**
 	 * @see org.openmrs.module.remoteformentry.RemoteFormEntryService#receiveGeneratedDataFromCentralForLocation(java.io.File)
@@ -454,7 +452,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 			dao.execGeneratedFile(generatedDataFile);
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.remoteformentry.RemoteFormEntryService#receiveGeneratedDataFromCentral(java.io.File)
 	 */
@@ -469,47 +467,47 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 			AdministrationService as = Context.getAdministrationService();
 			List<GlobalProperty> properties = as.getAllGlobalProperties();
 			Map<String, String> savedProperties = new HashMap<String, String>();
-			String[] prefixesToSave = { "formentry", "remoteformentry" };
+			String[] prefixesToSave = {"formentry", "remoteformentry"};
 
 			for (GlobalProperty prop : properties) {
 				for (String prefix : prefixesToSave) {
 					if (prop.getProperty().startsWith(prefix)) {
 						savedProperties.put(prop.getProperty(),
-						                    prop.getPropertyValue());
+								prop.getPropertyValue());
 					}
 				}
 			}
-			
+
 			// save the scheduler startup/started properties to a local variable
 			// and replace them afterwards
 			Map<Integer, Boolean> startOnStartupTasks = new HashMap<Integer, Boolean>();
 			Map<Integer, Boolean> startedTasks = new HashMap<Integer, Boolean>();
 			SchedulerService schedService = Context.getSchedulerService();
-			Collection <TaskDefinition> tasks = schedService.getRegisteredTasks();
+			Collection<TaskDefinition> tasks = schedService.getRegisteredTasks();
 			if (tasks != null) {
-				for ( TaskDefinition task : tasks ) { 
+				for (TaskDefinition task : tasks) {
 					startOnStartupTasks.put(task.getId(), task.getStartOnStartup());
 					startedTasks.put(task.getId(), task.getStarted());
 				}
 			}
-			
+
 			// exec mysql again to run the script and overwrite the database?
 			dao.execGeneratedFile(generatedDataFile);
-            
+
 			// Clear the session so no ambiguous data gets saved at the end of
 			// the transaction
 			Context.clearSession();
-			
+
 			// save the formentry and remoteformentry properties back in the
 			// database
 			for (Entry<String, String> entry : savedProperties.entrySet()) {
 				as.saveGlobalProperty(new GlobalProperty(entry.getKey(), entry.getValue()));
 			}
-			
+
 			// force this session to flush/commit so that these global properties are not
 			// rolled back.
 			dao.commitSession();
-			
+
 			// rebuild all of the xsns after the data dump because they are most
 			// likely customized for this remote server
 			FormService formService = Context.getFormService();
@@ -517,7 +515,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 			for (Form formObj : formService.getAllForms(false)) {
 				if (log.isDebugEnabled())
 					log.debug("Rebuilding form: " + formObj);
-				
+
 				try {
 					Object[] streamAndDir = FormEntryUtil.getCurrentXSN(formObj, false);
 					InputStream formStream = (InputStream) streamAndDir[0];
@@ -527,54 +525,54 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 						count = count + 1;
 						try {
 							OpenmrsUtil.deleteDirectory(tempDir);
-						} catch (IOException ioe) {}
-						
+						} catch (IOException ioe) {
+						}
+
 						try {
 							formStream.close();
-						} catch (IOException ioe) {}
-					}
-					else if (log.isDebugEnabled())
+						} catch (IOException ioe) {
+						}
+					} else if (log.isDebugEnabled())
 						log.debug("Unable to rebuild form: " + formObj + " because the xsn stream is null");
-					
-				} 
-				catch (IOException ioe) {
+
+				} catch (IOException ioe) {
 					log.warn("Unable to rebuild the xsn: " + formObj.getFormId());
 				}
 			}
 			if (log.isDebugEnabled())
 				log.debug(count + " xsn(s) rebuilt");
-			
+
 			// force this session to flush/commit so that these forms are not
 			// rolled back.
 			dao.commitSession();
-			
+
 			// put the scheduler settings back into the database
 			tasks = schedService.getRegisteredTasks();
-			
+
 			if (log.isDebugEnabled())
 				log.debug("Found " + tasks + " tasks to update");
-			
+
 			if (tasks != null) {
-				for ( TaskDefinition task : tasks ) { 
+				for (TaskDefinition task : tasks) {
 					if (log.isDebugEnabled())
 						log.debug("Updating task: " + task);
-					
+
 					Boolean started = startedTasks.get(task.getId());
 					if (started == null)
 						started = false;
-						
+
 					task.setStarted(started);
-					
+
 					Boolean startOnStartup = startOnStartupTasks.get(task.getId());
 					if (startOnStartup == null)
 						startOnStartup = false;
-					
+
 					task.setStartOnStartup(startOnStartup);
-					
+
 					schedService.saveTask(task);
 				}
 			}
-			
+
 		}
 
 	}
@@ -588,7 +586,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 			File outFile = RemoteFormEntryUtil.getGeneratedReturnDataFile();
 
 			dao.generateDataFile(outFile);
-			
+
 			// loop over the user defined remote locations
 			for (Location location : RemoteFormEntryUtil.getRemoteLocations().keySet()) {
 				File outFolderForLocation = RemoteFormEntryUtil.getGeneratedReturnDataFolderForLocation(location);
@@ -633,7 +631,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 					}
 				} catch (Exception e) {
 					log.debug("Uh oh, error getting ack file contents: "
-					        + file.getAbsolutePath(), e);
+							+ file.getAbsolutePath(), e);
 				}
 			}
 
@@ -685,7 +683,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 			writer = new FileWriter(outFile);
 			for (String ackName : filenames) {
 				writer.append(ackName
-				        + RemoteFormEntryConstants.ACK_FILENAME_SEPARATOR);
+						+ RemoteFormEntryConstants.ACK_FILENAME_SEPARATOR);
 			}
 			writer.close();
 		} catch (Exception e) {
@@ -723,7 +721,7 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 	public void setLocationId(Integer locationId) {
 		AdministrationService as = Context.getAdministrationService();
 		as.saveGlobalProperty(new GlobalProperty(RemoteFormEntryConstants.GP_LOCATION_ID,
-		                     locationId.toString()));
+				locationId.toString()));
 	}
 
 	/**
@@ -740,11 +738,68 @@ public class RemoteFormEntryServiceImpl implements RemoteFormEntryService {
 		// processing
 		// by the formentry processor finds the right patient
 		queue.setFormData(RemoteFormEntryUtil.replacePatientIdInDocument(patient.getPatientId(),
-		                                                                 formData));
+				formData));
 		queue.setCreator(Context.getAuthenticatedUser());
 		queue.setDateCreated(new Date());
 
 		formEntryService.createFormEntryQueue(queue);
+	}
+
+	/**
+	 * copies a form entry queue file to the outbound queue folder
+	 */
+	public void copyFormEntryQueueToOutbound(FormEntryQueue feq) {
+		// get the directory
+		File queueDir = RemoteFormEntryUtil.getOutboundDir();
+
+		// get the location of the form entry queue
+		String fileSystemUrl = feq.getFileSystemUrl();
+
+		// establish a file to write
+		File out;
+
+		// generate a filename
+		if (fileSystemUrl != null) {
+			// get just the file name out of the full path
+			String filename = WebUtil.stripFilename(fileSystemUrl);
+			// create the file with the same name as the filename in the current pending queue's url
+			out = new File(queueDir, filename);
+		} else {
+			out = OpenmrsUtil.getOutFile(queueDir, null, feq.getCreator());
+		}
+
+		// write the queue's data to the file
+		try {
+			FileWriter writer = new FileWriter(out);
+			writer.write(feq.getFormData());
+			writer.close();
+		} catch (IOException io) {
+			throw new FormEntryException("Unable to save formentry data in outbound queue", io);
+		}
+	}
+
+	/**
+	 * @see org.openmrs.module.remoteformentry.RemoteFormEntryService#getOutboundFormEntryQueues()
+	 */
+	public Collection<FormEntryQueue> getOutboundFormEntryQueues() {
+		List<FormEntryQueue> queues = new Vector<FormEntryQueue>();
+
+		File queueDir = RemoteFormEntryUtil.getOutboundDir();
+
+		if (queueDir.exists() == false) {
+			log.warn("Unable to open queue directory: " + queueDir);
+			return queues;
+		}
+
+		// loop over all files in queue dir and create lazy queue items
+		for (File file : queueDir.listFiles()) {
+			FormEntryQueue queueItem = new FormEntryQueue();
+			queueItem.setFileSystemUrl(file.getAbsolutePath());
+			queueItem.setDateCreated(new Date(file.lastModified()));
+			queues.add(queueItem);
+		}
+
+		return queues;
 	}
 
 }

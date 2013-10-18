@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.xml.xpath.XPath;
@@ -55,29 +53,26 @@ public class RemoteFormEntryUtil {
 	
 	/**
 	 * Cached directory where pending queue items are stored
-	 * 
-	 * @see #getPendingQueueDir()
 	 */
 	private static File pendingDir = null;
 	
 	/**
 	 * Cached directory where acks for import pending queue items are stored
-	 * 
-	 * @see #getAckDir()
 	 */
 	private static File ackDir = null;
-	
+
+	/**
+	 * Cached directory where outbound forms are stored
+	 */
+	private static File outboundDir;
+
 	/**
 	 * Cached directory where the generated data for returning to the remote site is stored
-	 * 
-	 * @see #getGeneratedReturnDataFile()
 	 */
 	private static File generatedReturnDataFile = null;
 	
 	/**
 	 * Cached directory for what type of server this is (central vs remote)
-	 * 
-	 * @see #getServerType()
 	 */
 	private static RemoteFormEntryConstants.RP_SERVER_TYPES serverType = null;
 	
@@ -86,7 +81,7 @@ public class RemoteFormEntryUtil {
 	 * .sql
 	 */
 	public static final String GENERATED_DATA_FILENAME = "generatedReturnData";
-	
+
 	/**
 	 * Gets the directory where the user specified their queues were being stored
 	 * 
@@ -1019,5 +1014,21 @@ public class RemoteFormEntryUtil {
 		} catch (XPathExpressionException e) { }
 		return uuid;
 	}
-	
+
+	public static File getOutboundDir() {
+		if (outboundDir == null) {
+			AdministrationService as = Context.getAdministrationService();
+			String folder = as.getGlobalProperty(RemoteFormEntryConstants.GP_OUTBOUND_QUEUE_DIR,
+					RemoteFormEntryConstants.GP_OUTBOUND_QUEUE_DIR_DEFAULT);
+
+			outboundDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(folder);
+
+			if (log.isDebugEnabled())
+				log
+						.debug("Loaded formentry outbound queue directory from global properties: "
+								+ outboundDir.getAbsolutePath());
+		}
+
+		return outboundDir;
+	}
 }

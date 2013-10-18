@@ -68,12 +68,12 @@ public class RemoteFormEntryPendingProcessor{
 	public void processRemoteFormEntryPendingQueue(RemoteFormEntryPendingQueue pendingQueue) {
 		log.debug("Transforming form entry queue");
 		
-		RemoteFormEntryService remoteFormEntryService = (RemoteFormEntryService)Context.getService(RemoteFormEntryService.class);
+		RemoteFormEntryService remoteFormEntryService = Context.getService(RemoteFormEntryService.class);
 		FormService formService = Context.getFormService();
 		
 		String formData = pendingQueue.getFormData();
-		Integer formId = null;
-		String errorDetails = null;
+		Integer formId;
+		String errorDetails;
 		
 		// First we parse the FormEntry xml data to obtain the formId of the
 		// form that was used to create the xml data

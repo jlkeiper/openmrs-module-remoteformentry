@@ -110,6 +110,13 @@
 			Directory where the acks to be returned to remote sites are stored
 		</description>
 	</globalProperty>
+    <globalProperty>
+        <property>@MODULE_ID@.outbound_queue_dir</property>
+        <defaultValue>remoteformentry/outboundQueue</defaultValue>
+        <description>
+            Directory where the outbound queue items will be stored
+        </description>
+    </globalProperty>
 	<globalProperty>
 		<property>@MODULE_ID@.remote_locations</property>
 		<defaultValue></defaultValue>

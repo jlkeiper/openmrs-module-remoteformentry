@@ -9,32 +9,24 @@ package org.openmrs.module.remoteformentry;
  */
 public class RemoteFormEntryConstants {
 
-	/**
-	 * Directory that the pending queue items are stored in
-	 */
+	// Directory that the pending queue items are stored in
 	public static final String GP_PENDING_QUEUE_DIR = "remoteformentry.pending_queue_dir";
-	
-	/**
-	 * Directory that the ack items are stored in
-	 */
-	public static final String GP_ACK_DIR = "remoteformentry.ack_dir";
+	public static final String GP_PENDING_QUEUE_DIR_DEFAULT = "remoteformentry/pendingQueue";
 
+	// Directory that the outbound queue items are stored in
+	public static final String GP_OUTBOUND_QUEUE_DIR = "remoteformentry.outbound_queue_dir";
+	public static final String GP_OUTBOUND_QUEUE_DIR_DEFAULT = "remoteformentry/outboundQueue";
+
+	// Directory that the ack items are stored in
+	public static final String GP_ACK_DIR = "remoteformentry.ack_dir";
 	public static final String GP_ACK_DIR_DEFAULT = "remoteformentry/acks";
 
-	/**
-	 * Global property holding the list of initial encounter types
-	 */
+	 // Global property holding the list of initial encounter types
 	public static final String GP_INITIAL_ENCOUNTER_TYPES = "remoteformentry.initialEncounterTypes";
 
-	/**
-	 * Default name for the directory that the pending queue items are stored in
-	 */
-	public static final String GP_PENDING_QUEUE_DIR_DEFAULT = "remoteformentry/pendingQueue";
-	
+	// Privileges
 	public static final String PRIV_IMPORT_REMOTE_FORM_ENTRY = "Remote Form Entry Import";
-	
 	public static final String PRIV_EXPORT_REMOTE_FORM_ENTRY = "Remote Form Entry Export";
-	
 	public static final String PRIV_RESOLVE_REMOTE_FORM_ENTRY = "Remote Form Entry Resolve Errors";
 	
 	public static final String PRIV_EDIT_PROPS_REMOTE_FORM_ENTRY = "Remote Form Entry Edit Properties";

@@ -60,11 +60,11 @@ public class QueueDownloadServlet extends HttpServlet {
 		
 		try {
 			// get the defined location for this remote site
-			RemoteFormEntryService remoteService = (RemoteFormEntryService)Context.getService(RemoteFormEntryService.class);
+			RemoteFormEntryService remoteService = Context.getService(RemoteFormEntryService.class);
 			Integer locationId = remoteService.getLocationId();
 			if (locationId == null)
 				throw new RemoteFormEntryException("You must have the location id defined.  See Remote Form Entry Properties page");
-			Location location = Context.getEncounterService().getLocation(Integer.valueOf(locationId));
+			Location location = Context.getLocationService().getLocation(Integer.valueOf(locationId));
 			if (location == null)
 				throw new RemoteFormEntryException("The defined location id for this remote site is invalid.  There is no location defined with id: " + locationId);
 			
@@ -83,9 +83,9 @@ public class QueueDownloadServlet extends HttpServlet {
 			File outputFile = new File(exportDirectory, outputFilename + ".zip");
 			FileOutputStream zipFileOutputStream = new FileOutputStream(outputFile);
 			ZipOutputStream zos	= new ZipOutputStream(zipFileOutputStream);
-			FormEntryService fs	= (FormEntryService)Context.getService(FormEntryService.class);
+			FormEntryService fs	= Context.getService(FormEntryService.class);
 			
-			Collection<FormEntryQueue> queueItems = fs.getFormEntryQueues();
+			Collection<FormEntryQueue> queueItems = remoteService.getOutboundFormEntryQueues();
 			
 			// they clicked the button and there aren't any queue items
 			if (queueItems.size() < 1)

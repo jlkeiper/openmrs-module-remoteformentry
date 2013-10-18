@@ -1,6 +1,7 @@
 package org.openmrs.module.remoteformentry;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.xpath.XPath;
@@ -10,6 +11,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Authorized;
+import org.openmrs.module.formentry.FormEntryQueue;
 import org.openmrs.module.remoteformentry.db.RemoteFormEntryDAO;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -187,4 +189,13 @@ public interface RemoteFormEntryService {
      */
     public void createFormEntryQueueForPatient(String formData, Patient patient);
 
+	/**
+	 * copies the specified FormEntryQueue item to the outbound folder
+	 */
+	public void copyFormEntryQueueToOutbound(FormEntryQueue feq);
+
+	/**
+	 * gets all outbound form entry queues
+	 */
+	public Collection<FormEntryQueue> getOutboundFormEntryQueues();
 }
