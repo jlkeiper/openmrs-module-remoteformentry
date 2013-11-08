@@ -38,8 +38,7 @@ public class RemoteFormEntryPendingProcessorTest extends
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document doc = db
-				.parse(new File(
-						"src/test/resources/org/openmrs/module/remoteformentry/remotelyEnteredForm.xml"));
+				.parse(ClassLoader.getSystemResourceAsStream("form/remotelyEnteredForm.xml"));
 		XPath xp = XPathFactory.newInstance().newXPath();
 
 		// get the Patient
@@ -67,6 +66,7 @@ public class RemoteFormEntryPendingProcessorTest extends
 		pi.setIdentifier("9-1");
 		pi.setIdentifierType(Context.getPatientService()
 				.getAllPatientIdentifierTypes().get(0));
+		pi.setLocation(Context.getLocationService().getLocation(1));
 		original.addIdentifier(pi);
 		Context.getPatientService().savePatient(original);
 
@@ -74,8 +74,7 @@ public class RemoteFormEntryPendingProcessorTest extends
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document doc = db
-				.parse(new File(
-						"src/test/resources/org/openmrs/module/remoteformentry/remotelyEnteredForm.xml"));
+				.parse(ClassLoader.getSystemResourceAsStream("form/remotelyEnteredForm.xml"));
 		XPath xp = XPathFactory.newInstance().newXPath();
 
 		// get the Patient
@@ -99,8 +98,7 @@ public class RemoteFormEntryPendingProcessorTest extends
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document doc = db
-				.parse(new File(
-						"src/test/resources/org/openmrs/module/remoteformentry/remotelyEnteredFormNoUUID.xml"));
+				.parse(ClassLoader.getSystemResourceAsStream("form/remotelyEnteredFormNoUUID.xml"));
 		XPath xp = XPathFactory.newInstance().newXPath();
 
 		// get the Patient
@@ -119,8 +117,7 @@ public class RemoteFormEntryPendingProcessorTest extends
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document doc = db
-				.parse(new File(
-						"src/test/resources/org/openmrs/module/remoteformentry/remotelyEnteredForm.xml"));
+				.parse(ClassLoader.getSystemResourceAsStream("form/remotelyEnteredForm.xml"));
 		XPath xp = XPathFactory.newInstance().newXPath();
 
 		// get the Patient

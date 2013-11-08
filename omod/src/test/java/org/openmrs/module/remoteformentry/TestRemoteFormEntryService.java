@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +39,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.OpenmrsUtil;
 import org.w3c.dom.Document;
 
 /**
@@ -152,19 +154,16 @@ public class TestRemoteFormEntryService extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testPatientCreation() throws Exception {
-		executeDataSet("org/openmrs/module/remoteformentry/remoteformentrydataset.xml");
+		executeDataSet("dataset/remoteformentrydataset.xml");
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		XPathFactory xpf = XPathFactory.newInstance();
 		XPath xp = xpf.newXPath();
 		
-		File xmlFile = new File("src/test/resources/org/openmrs/module/remoteformentry/remotelyEnteredForm.xml");
-		log.debug("xmlFile location: " + xmlFile.getAbsolutePath());
+		Document doc = db.parse(ClassLoader.getSystemResourceAsStream("form/remotelyEnteredForm.xml"));
 		
-		Document doc = db.parse(xmlFile);
-		
-		RemoteFormEntryService remoteService = (RemoteFormEntryService) Context.getService(RemoteFormEntryService.class);
+		RemoteFormEntryService remoteService = Context.getService(RemoteFormEntryService.class);
 		PatientService patientService = Context.getPatientService();
 		
 		Patient createdPatient = remoteService.createPatientInDatabase(doc, xp);
@@ -210,7 +209,7 @@ public class TestRemoteFormEntryService extends BaseModuleContextSensitiveTest {
     	assertEquals(name, firstName);
     	assertTrue(name.equalsContent(firstName));
     	
-    	if (name.isPreferred() == false) {
+    	if (!name.isPreferred()) {
     		// put break point here to debug a bit
     		assertTrue(false);
     	}
@@ -237,10 +236,11 @@ public class TestRemoteFormEntryService extends BaseModuleContextSensitiveTest {
     	assertTrue(identifiers.size() + " is not valid", identifiers.size() == 2);
     	
     	PatientIdentifier prefIdentifier = patient.getPatientIdentifier();
-    	PatientIdentifier firstIdentifier = (PatientIdentifier)identifiers.toArray()[0];
-    	assertEquals(prefIdentifier, firstIdentifier);
-    	assertTrue(prefIdentifier.equalsContent(firstIdentifier));
-    	
+    	PatientIdentifier otherIdentifier = (PatientIdentifier)identifiers.toArray()[0];
+		if (OpenmrsUtil.nullSafeEquals(prefIdentifier, otherIdentifier)) {
+			otherIdentifier = (PatientIdentifier) identifiers.toArray()[1];
+		}
+
     	assertTrue(prefIdentifier.getIdentifier() + " is not valid", "123456789".equals(prefIdentifier.getIdentifier()));
     	assertTrue(prefIdentifier.getIdentifierType() + " is not valid", prefIdentifier.getIdentifierType().equals(new PatientIdentifierType(2)));
     	assertTrue(prefIdentifier.getLocation() + " is not valid", prefIdentifier.getLocation().equals(new Location(1)));
@@ -248,13 +248,12 @@ public class TestRemoteFormEntryService extends BaseModuleContextSensitiveTest {
     	assertTrue(prefIdentifier.isPreferred());
     	assertFalse(prefIdentifier.isVoided());
     	
-    	PatientIdentifier secondIdentifier = (PatientIdentifier)identifiers.toArray()[1];
-    	assertTrue(secondIdentifier.getIdentifier() + " is not valid", "1234567890".equals(secondIdentifier.getIdentifier()));
-    	assertTrue(secondIdentifier.getIdentifierType() + " is not valid", secondIdentifier.getIdentifierType().equals(new PatientIdentifierType(4)));
-    	assertTrue(secondIdentifier.getLocation() + " is not valid", secondIdentifier.getLocation().equals(new Location(1)));
-    	assertTrue(secondIdentifier.getCreator() + " is not valid", secondIdentifier.getCreator().getId().equals(1));
-    	assertFalse(secondIdentifier.isPreferred());
-    	assertTrue(secondIdentifier.isVoided());
+    	assertTrue(otherIdentifier.getIdentifier() + " is not valid", "1234567890".equals(otherIdentifier.getIdentifier()));
+    	assertTrue(otherIdentifier.getIdentifierType() + " is not valid", otherIdentifier.getIdentifierType().equals(new PatientIdentifierType(4)));
+    	assertTrue(otherIdentifier.getLocation() + " is not valid", otherIdentifier.getLocation().equals(new Location(1)));
+    	assertTrue(otherIdentifier.getCreator() + " is not valid", otherIdentifier.getCreator().getId().equals(1));
+    	assertFalse(otherIdentifier.isPreferred());
+    	assertTrue(otherIdentifier.isVoided());
     	
     	// compare the addresses
     	Set<PersonAddress> addresses = patient.getAddresses();
@@ -265,7 +264,7 @@ public class TestRemoteFormEntryService extends BaseModuleContextSensitiveTest {
     	assertEquals(prefAddress, firstAddress);
     	assertTrue(prefAddress.equalsContent(firstAddress));
     	
-    	if (prefAddress.isPreferred() == false) {
+    	if (!prefAddress.isPreferred()) {
     		// put break point here to debug a bit
     		assertTrue(false);
     	}

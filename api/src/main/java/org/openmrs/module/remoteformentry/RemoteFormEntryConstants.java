@@ -48,7 +48,10 @@ public class RemoteFormEntryConstants {
 	 * @see #RP_SERVER_TYPES
 	 */
 	public static final String RP_SERVER_TYPE = "remoteformentry.server_type";
-	
+
+	// task UUIDs
+	public static final String TASK_PRE_PROCESS_FORM_ENTRY_QUEUE = "RFEPreProcessFormEntryQueueTask0000000";
+
 	/**
 	 * Allowed answers for the runtime property 'RP_SERVER_TYPE'
 	 * @see #RP_SERVER_TYPE
